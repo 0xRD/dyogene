@@ -76,7 +76,8 @@ brew install --cask 0xrd/tap/dyogene
 
 Apple silicon, macOS 15 or later. Dyogène is not notarized (no paid developer account): on first
 launch, allow it in System Settings, Privacy & Security, Open Anyway. For the full picture, add
-it to Full Disk Access in the same place (optional).
+it to Full Disk Access in the same place (optional). Until the app has been allowed once, macOS
+also stops the `dyogene` command.
 
 ## Build
 

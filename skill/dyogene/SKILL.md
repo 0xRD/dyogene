@@ -20,6 +20,10 @@ Use the first that exists:
 
 If none exists, tell the user Dyogène is not installed and stop.
 
+If the tool is killed right away (exit code 137), macOS has not allowed the app yet: ask the user
+to open Dyogène once and click "Open Anyway" in System Settings, Privacy & Security. Do not
+remove quarantine attributes yourself.
+
 ## Rules (always)
 
 - **Never read file contents** (no `cat`, `head`, Read tool, `strings`, hashes, Quick Look,
