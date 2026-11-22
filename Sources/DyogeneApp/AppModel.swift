@@ -113,6 +113,7 @@ final class AppModel {
         scanRoot = UserDefaults.standard.string(forKey: "scanRoot") ?? NSHomeDirectory()
         exclusions = UserDefaults.standard.stringArray(forKey: "exclusions") ?? []
         if let saved = UserDefaults.standard.string(forKey: "lens").flatMap(Lens.init) { lens = saved }
+        if let forced = environment["DYOGENE_LENS"].flatMap(Lens.init) { lens = forced }
         if isDemo { loadDemo() }
         if let screen = environment["DYOGENE_SCREEN"].flatMap(Screen.init) { self.screen = screen }
     }

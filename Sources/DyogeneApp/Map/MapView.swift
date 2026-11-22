@@ -127,7 +127,22 @@ final class MapNSView: NSView {
     override func setFrameSize(_ newSize: NSSize) {
         super.setFrameSize(newSize)
         relayoutIfNeeded()
+        simulateHoverIfRequested()
         needsDisplay = true
+    }
+
+    /// DYOGENE_HOVER=x,y (fractions of the map) shows the lantern there, for screenshots.
+    private func simulateHoverIfRequested() {
+        guard let value = ProcessInfo.processInfo.environment["DYOGENE_HOVER"], !tiles.isEmpty else { return }
+        let parts = value.split(separator: ",").compactMap { Double($0) }
+        guard parts.count == 2 else { return }
+        let point = CGPoint(x: bounds.width * parts[0], y: bounds.height * parts[1])
+        mouse = point
+        hovered = MapLayout.hit(point, in: tiles)
+        if let hit = hovered {
+            model?.hover = AppModel.Hover(node: hit.node, parent: hit.parent, groupCount: hit.groupCount,
+                                          groupSize: hit.groupSize, location: point, mapSize: bounds.size)
+        }
     }
 
     private func updateDisplayLink() {

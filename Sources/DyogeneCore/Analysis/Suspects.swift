@@ -147,6 +147,9 @@ public enum Suspects {
 
     /// Runs every rule on the tree. `home` is the home folder; rules using home paths only match
     /// when the scan covers it.
+    /// Findings smaller than this are noise, not advice.
+    public static let minimumFindingSize: UInt64 = 50_000_000
+
     public static func findings(in tree: FileTree, home: String, now: Double) -> [SuspectFinding] {
         var claimed = Set<Int>()
         var results: [SuspectFinding] = []
@@ -158,10 +161,10 @@ public enum Suspects {
                 }
                 .filter { tree[$0].size > 0 && !tree[$0].flags.contains(.removed) }
                 .sorted { tree[$0].size > tree[$1].size }
-            guard !matched.isEmpty else { continue }
+            let size = matched.reduce(0) { $0 + tree[$1].size }
+            guard !matched.isEmpty, size >= minimumFindingSize else { continue }
             claimed.formUnion(matched)
-            results.append(SuspectFinding(rule: rule, nodes: matched,
-                                          size: matched.reduce(0) { $0 + tree[$1].size }))
+            results.append(SuspectFinding(rule: rule, nodes: matched, size: size))
         }
         return results.sorted { a, b in a.size > b.size }
     }
