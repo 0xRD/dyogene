@@ -68,6 +68,16 @@ you stay the one who removes things.
 scripts/install-skill.sh
 ```
 
+## Install
+
+```bash
+brew install --cask 0xrd/tap/dyogene
+```
+
+Apple silicon, macOS 15 or later. Dyogène is not notarized (no paid developer account): on first
+launch, allow it in System Settings, Privacy & Security, Open Anyway. For the full picture, add
+it to Full Disk Access in the same place (optional).
+
 ## Build
 
 macOS 15 or later, Swift 6 (Command Line Tools are enough).
