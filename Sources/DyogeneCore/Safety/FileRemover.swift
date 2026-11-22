@@ -146,6 +146,12 @@ public struct EraseEnvironment: Sendable {
     public var localSnapshots: Int?
     public var timeMachineConfigured: Bool?
 
+    public init(fileVaultOn: Bool? = nil, localSnapshots: Int? = nil, timeMachineConfigured: Bool? = nil) {
+        self.fileVaultOn = fileVaultOn
+        self.localSnapshots = localSnapshots
+        self.timeMachineConfigured = timeMachineConfigured
+    }
+
     /// Reads them with system tools that work without admin rights.
     public static func current() -> EraseEnvironment {
         var environment = EraseEnvironment()
