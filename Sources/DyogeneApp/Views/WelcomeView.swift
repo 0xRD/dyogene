@@ -14,10 +14,22 @@ struct WelcomeView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 26) {
-                Image(nsImage: NSApp.applicationIconImage)
-                    .resizable()
-                    .frame(width: 132, height: 132)
-                    .shadow(color: Color.lantern.opacity(0.25), radius: 30)
+                HStack(alignment: .center, spacing: 6) {
+                    SageFigure(expression: error == nil ? .calm : .curious)
+                        .frame(width: 170, height: 170)
+                    Text(error == nil
+                         ? "I am Dyogène. I own a jar and a lantern.\nShall we see what you own?"
+                         : "Hm. Something got in the way.")
+                        .font(.system(size: 15, design: .serif).italic())
+                        .foregroundStyle(Color.ink)
+                        .fixedSize()
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 10)
+                        .background(SpeechBubble().fill(Color.panel))
+                        .overlay(SpeechBubble().stroke(Color.stroke))
+                        .padding(.bottom, 60)
+                }
+                .padding(.trailing, 90)
 
                 VStack(spacing: 10) {
                     Text("Dyogène")

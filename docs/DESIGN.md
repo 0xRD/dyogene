@@ -38,3 +38,25 @@ figures, SF Pro with monospaced digits for data. No bundled fonts.
 Destructive actions are never one click and never the first menu item. The sheet says exactly
 what happens; Cancel is the default button; the confirm button fills while held. The Trash
 comes first, with Put Back afterwards.
+
+## The character
+
+**Dyogène, the old sage.** After Diogenes, who lived in a jar and walked in daylight with a
+lantern "looking for a man". A bald dome with a shine, white tufts over the ears, a long cloud
+of a beard (never combed), bushy brows, warm cheeks, a teal robe with a sand fold, and a lantern
+held up in his right hand.
+
+- **Quirk:** his left eyebrow always sits a little higher. Curious lifts it further. Never make
+  him frown or scold: he is wry, never mean.
+- **Expressions** (`DyogeneExpression`): calm, curious, pleased (eyes closed in a smile),
+  searching (eyes to his lantern, while scanning). Picked from what he looks at, never animated
+  in a loop: no timer, no redraw while idle.
+- **Voice** (`Remark` in Core): short lines in New York italic, in a speech bubble. Built from
+  metadata only (size, age, kind, flags). He asks ("Treasure, or habit?"), he never decides.
+- **Where:** welcome screen (introduces himself), the inspector (one remark about the selection),
+  the scan overlay (searching), the Suspects header. Nowhere else: the map stays the map.
+- **Drawing:** `DyogeneArt`, plain Core Graphics on a 100-point grid, fixed colours (he looks the
+  same in light and dark mode, like a figure painted on a jar). Below 40 pt he drops strands,
+  catchlights, smile lines and the flame. The icon renderer compiles the same file.
+- **The icon:** he stands in his jar, only head and lantern above the rim; the jar's body is the
+  treemap, fresh teal at the top, dust at the bottom.

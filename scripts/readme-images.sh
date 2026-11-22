@@ -15,8 +15,13 @@ shot() {
 }
 
 shot map-dark DYOGENE_APPEARANCE=dark DYOGENE_LENS=dust DYOGENE_HOVER=0.18,0.62
-shot map-light DYOGENE_APPEARANCE=light DYOGENE_LENS=dust DYOGENE_SELECT="Library/Caches"
+shot map-light DYOGENE_APPEARANCE=light DYOGENE_LENS=dust DYOGENE_SELECT="Movies/Wedding film master.mp4" DYOGENE_FOCUS_PARENT=1
 shot map-kind DYOGENE_APPEARANCE=dark DYOGENE_LENS=kind
 shot hoard DYOGENE_APPEARANCE=dark DYOGENE_SCREEN=hoard
 shot suspects DYOGENE_APPEARANCE=dark DYOGENE_SCREEN=suspects
 shot remove DYOGENE_APPEARANCE=dark DYOGENE_SELECT="Movies/Wedding film master.mp4" DYOGENE_FOCUS_PARENT=1 DYOGENE_SHEET=secure DYOGENE_SNAPSHOT_DELAY=4
+
+# The welcome screen scans nothing, so it needs no demo data.
+env DYOGENE_WINDOW_SIZE=1400x860 DYOGENE_APPEARANCE=dark DYOGENE_SNAPSHOT="$PWD/$out/welcome.png" "$app" >/dev/null 2>&1
+sips -Z 1600 "$out/welcome.png" >/dev/null
+print "readme-images: $out/welcome.png"

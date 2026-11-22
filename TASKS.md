@@ -6,6 +6,7 @@
 - [x] M4 Hoard and Suspects screens
 - [x] M5 Actions and destructive sheets
 - [x] M6 CLI and Claude skill
+- [x] M8 The character: Dyogène the old sage (art, remarks, icon)
 - [ ] M7 Demo mode screenshots, README, polish, private repo
 
 ## Not verified yet (needs the user)

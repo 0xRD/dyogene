@@ -1,5 +1,6 @@
-// Draws the Dyogène icon: Diogenes' jar, its body a treemap of tiles from fresh teal to dusty sand,
-// with lantern light rising from its mouth. Usage: swift scripts/render-icon.swift OUT.png [SIZE]
+// Draws the Dyogène icon: the old sage peeking out of his jar with his lantern raised; the jar's
+// body is a treemap of tiles from fresh teal to dusty sand. Built by scripts/make-icns.sh together
+// with Sources/DyogeneApp/Design/DyogeneArt.swift (the character).
 import AppKit
 import CoreGraphics
 
@@ -40,18 +41,31 @@ context.drawLinearGradient(night, start: CGPoint(x: 512, y: 100), end: CGPoint(x
 // Lantern light rising from the jar's mouth.
 let glow = CGGradient(colorsSpace: space, colors: [rgb(0xFFE6A8, 0.95), rgb(0xF2B33D, 0.45), rgb(0xF2B33D, 0)] as CFArray,
                       locations: [0, 0.35, 1])!
-context.drawRadialGradient(glow, startCenter: CGPoint(x: 512, y: 318), startRadius: 0,
-                           endCenter: CGPoint(x: 512, y: 300), endRadius: 330, options: [])
+context.drawRadialGradient(glow, startCenter: CGPoint(x: 392, y: 380), startRadius: 0,
+                           endCenter: CGPoint(x: 420, y: 360), endRadius: 340, options: [])
 
 // Dust motes in the light.
 let motes: [(CGFloat, CGFloat, CGFloat, CGFloat)] = [
-    (430, 210, 7, 0.75), (590, 180, 5, 0.6), (515, 150, 4, 0.5), (640, 240, 6, 0.55), (380, 255, 4, 0.45),
-    (470, 120, 3, 0.35), (560, 235, 3, 0.7), (612, 135, 3, 0.4),
+    (300, 300, 6, 0.7), (330, 220, 4, 0.55), (275, 400, 4, 0.5), (360, 175, 3, 0.4), (250, 260, 3, 0.45),
+    (690, 250, 4, 0.35), (720, 330, 3, 0.3), (430, 150, 3, 0.35),
 ]
 for (x, y, r, a) in motes {
     context.setFillColor(rgb(0xFFF1CC, a))
     context.fillEllipse(in: CGRect(x: x - r, y: y - r, width: 2 * r, height: 2 * r))
 }
+
+// The sage, standing in his jar.
+// Only what rises above the rim shows: his shoulders stay inside the jar.
+context.saveGState()
+context.clip(to: CGRect(x: 0, y: 0, width: 1024, height: 450))
+DyogeneArt.draw(in: context, rect: CGRect(x: 312, y: 130, width: 400, height: 400), expression: .calm, glow: false)
+context.restoreGState()
+
+// The jar, smaller and lower so he fits above it.
+context.saveGState()
+context.translateBy(x: 512, y: 874)
+context.scaleBy(x: 0.78, y: 0.78)
+context.translateBy(x: -512, y: -874)
 
 // The jar (a pithos): rim, short neck, round shoulders, narrow foot.
 let jar = CGMutablePath()
@@ -128,7 +142,8 @@ context.addPath(CGPath(roundedRect: rim.insetBy(dx: 16, dy: 12), cornerWidth: 8,
 context.setFillColor(rgb(0xFFE6A8))
 context.fillPath()
 
-context.restoreGState()
+context.restoreGState() // jar transform
+context.restoreGState() // plate clip
 
 let image = context.makeImage()!
 let rep = NSBitmapImageRep(cgImage: image)

@@ -9,7 +9,11 @@ after the Diogenes syndrome (keeping everything), and after the philosopher who 
 and walked around with a lantern.
 
 It is a cousin of [Hector](https://github.com/0xRD/hector) and
-[Gustave](https://github.com/0xRD/gustave): small, local, and careful.
+[Gustave](https://github.com/0xRD/gustave): small, local, and careful. Like Hector, it has a
+face: Dyogène himself, an old sage with a lantern and a raised eyebrow, who comments on what you
+look at ("38 GB, untouched for 3 years. Treasure, or habit?") and lets you decide.
+
+![Welcome](docs/images/welcome.png)
 
 ![The map: tile area is size, sand and grain mean long unused](docs/images/map-dark.png)
 

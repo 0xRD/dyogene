@@ -283,6 +283,8 @@ struct ScanStatus: View {
 
     var body: some View {
         VStack(spacing: 6) {
+            SageFigure(expression: .searching)
+                .frame(width: 84, height: 84)
             Text("Looking through \(ScanLocation.title(for: model.scanRoot))…")
                 .font(Typeface.display(20))
             HStack(spacing: 14) {

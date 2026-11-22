@@ -3,7 +3,13 @@
 set -euo pipefail
 cd "${0:A:h}/.."
 
-swift scripts/render-icon.swift Resources/icon-1024.png
+# The renderer shares the character's drawing with the app.
+render=$(mktemp -d)
+cp scripts/render-icon.swift "$render/main.swift"
+cp Sources/DyogeneApp/Design/DyogeneArt.swift "$render/"
+swiftc -O "$render/main.swift" "$render/DyogeneArt.swift" -o "$render/render-icon"
+"$render/render-icon" Resources/icon-1024.png
+rm -rf "$render"
 
 work=$(mktemp -d)
 trap 'rm -rf "$work"' EXIT

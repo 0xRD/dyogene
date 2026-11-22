@@ -13,6 +13,8 @@ struct Inspector: View {
                 VStack(alignment: .leading, spacing: 18) {
                     header(index, node: node, tree: tree)
                     facts(index, node: node, tree: tree)
+                    let remark = Remark.about(index, in: tree, now: model.now)
+                    SageSays(text: remark.text, expression: DyogeneExpression(remark.mood))
                     if node.isDirectory && !node.flags.contains(.smallGroup) && !tree.visibleChildren(of: index).isEmpty {
                         contents(index, tree: tree)
                     }

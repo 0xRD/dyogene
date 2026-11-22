@@ -8,12 +8,19 @@ struct SuspectsScreen: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Suspects")
-                        .font(Typeface.display(26))
-                    Text("Places that often hold space you can win back. Each says what it is and what removing it costs. Look before you remove.")
-                        .foregroundStyle(Color.inkSecondary)
-                        .frame(maxWidth: 640, alignment: .leading)
+                HStack(alignment: .bottom, spacing: 24) {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Suspects")
+                            .font(Typeface.display(26))
+                        Text("Places that often hold space you can win back. Each says what it is and what removing it costs. Look before you remove.")
+                            .foregroundStyle(Color.inkSecondary)
+                            .frame(maxWidth: 560, alignment: .leading)
+                    }
+                    Spacer(minLength: 0)
+                    if !model.findings.isEmpty {
+                        SageSays(text: "Some of these you will not miss. Read what each one costs first.", expression: .curious, size: 60)
+                            .frame(maxWidth: 380)
+                    }
                 }
                 if model.isScanning {
                     ProgressView("Scanning…")
