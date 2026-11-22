@@ -106,3 +106,19 @@ import Testing
         }
     }
 }
+
+@Suite struct DataVolumeTests {
+    @Test func wholeMacScanMatchesUsualPaths() {
+        let options = ScanOptions(root: "/System/Volumes/Data", exclusions: ["/Users/alice/Big"],
+                                  protectedSkips: ["/Users/alice/Library/Containers"])
+        #expect(options.protected.contains("/System/Volumes/Data/Users/alice/Library/Containers"))
+        #expect(options.exclusions.contains("/System/Volumes/Data/Users/alice/Big"))
+        let home = ScanOptions(root: "/Users/alice", protectedSkips: ["/Users/alice/Library/Containers"])
+        #expect(home.protected == ["/Users/alice/Library/Containers"])
+    }
+
+    @Test func displayPathsDropTheDataVolume() {
+        #expect(FileTree.displayPath("/System/Volumes/Data/Users/alice/x") == "/Users/alice/x")
+        #expect(FileTree.displayPath("/Users/alice/x") == "/Users/alice/x")
+    }
+}

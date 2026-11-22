@@ -42,7 +42,7 @@ struct Inspector: View {
                 .foregroundStyle(Color.ink)
                 .lineLimit(3)
                 .textSelection(.enabled)
-            Text(tree.path(of: index))
+            Text(tree.displayPath(of: index))
                 .font(.system(size: 11))
                 .foregroundStyle(Color.inkSecondary)
                 .lineLimit(2)

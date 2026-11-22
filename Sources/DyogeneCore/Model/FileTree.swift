@@ -78,6 +78,20 @@ public struct FileTree: Sendable, Codable {
 
     public static let root = 0
 
+    /// Where macOS mounts the volume holding apps, users and Library. Its files are the same as
+    /// at their usual paths (/Users/... is /System/Volumes/Data/Users/...).
+    public static let dataVolume = "/System/Volumes/Data"
+
+    /// The usual spelling of a path: without the data volume prefix.
+    public static func displayPath(_ path: String) -> String {
+        path.hasPrefix(dataVolume + "/") ? String(path.dropFirst(dataVolume.count)) : path
+    }
+
+    /// The path as a person would write it (for the UI and reports).
+    public func displayPath(of index: Int) -> String {
+        FileTree.displayPath(path(of: index))
+    }
+
     public subscript(index: Int) -> Node { nodes[index] }
 
     public var totalSize: UInt64 { nodes.first?.size ?? 0 }
@@ -138,7 +152,11 @@ public struct FileTree: Sendable, Codable {
     /// Finds a node by absolute path, or nil when it is outside the tree or was not kept.
     public func index(ofPath path: String) -> Int? {
         let base = rootPath.hasSuffix("/") ? String(rootPath.dropLast()) : rootPath
-        let standardized = (path as NSString).standardizingPath
+        var standardized = (path as NSString).standardizingPath
+        // Accept /Users/... for a tree of the data volume.
+        if base.hasPrefix(FileTree.dataVolume), !standardized.hasPrefix(FileTree.dataVolume + "/"), standardized != FileTree.dataVolume {
+            standardized = FileTree.dataVolume + standardized
+        }
         if standardized == base || standardized == rootPath { return FileTree.root }
         guard standardized.hasPrefix(base + "/") else { return nil }
         var current = FileTree.root

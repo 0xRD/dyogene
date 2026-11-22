@@ -159,7 +159,7 @@ public enum MapLayout {
             let node = tree[child]
             let canNest = node.isDirectory && !node.isPackage && depth + 1 < options.maxDepth
                 && inset.width >= options.minNestWidth && inset.height >= options.minNestHeight
-                && node.childCount > 0
+                && node.childCount > 0 && !tree.visibleChildren(of: child).isEmpty
             if canNest {
                 let content = CGRect(x: inset.minX + 2, y: inset.minY + options.headerHeight,
                                      width: inset.width - 4, height: inset.height - options.headerHeight - 2)

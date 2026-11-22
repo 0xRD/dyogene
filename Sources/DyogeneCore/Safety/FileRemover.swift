@@ -52,6 +52,9 @@ public enum FileRemover {
         if case .refused(let reason) = RemovalPolicy.verdict(for: path, home: home) {
             throw Failure.refused(reason)
         }
+        if mode != .trash, let reason = preflight(path, mode: mode) {
+            throw Failure.refused(reason)
+        }
         var info = stat()
         guard lstat(path, &info) == 0 else { throw Failure.failed(path, "it no longer exists.") }
 
@@ -88,6 +91,37 @@ public enum FileRemover {
         } catch {
             throw Failure.failed(outcome.originalPath, error.localizedDescription)
         }
+    }
+
+    /// Checks a whole folder before deleting it for good, so nothing is half done: another disk
+    /// mounted inside must never be wiped through it, and a secure erase must not stop midway on
+    /// a file it cannot erase. Returns why it is refused, or nil.
+    public static func preflight(_ path: String, mode: RemovalMode) -> String? {
+        var top = stat()
+        guard lstat(path, &top) == 0 else { return nil }
+        guard top.st_mode & S_IFMT == S_IFDIR else {
+            if mode == .secureErase && top.st_mode & S_IFMT == S_IFREG && top.st_nlink > 1 {
+                return "It has other names (hard links), so its content would survive. Use Delete Permanently."
+            }
+            return nil
+        }
+        guard let enumerator = FileManager.default.enumerator(atPath: path) else { return nil }
+        while let relative = enumerator.nextObject() as? String {
+            var info = stat()
+            guard lstat(path + "/" + relative, &info) == 0 else { continue }
+            if info.st_dev != top.st_dev {
+                return "Another disk is mounted inside (\(relative)). Eject it first."
+            }
+            if mode == .secureErase {
+                if info.st_flags & DirectoryReader.datalessFlag != 0 {
+                    return "Some files inside are stored in iCloud only (\(relative))."
+                }
+                if info.st_mode & S_IFMT == S_IFREG && info.st_nlink > 1 {
+                    return "A file inside has other names (hard links): \(relative). Use Delete Permanently."
+                }
+            }
+        }
+        return nil
     }
 
     /// Overwrites every regular file under `path` with random data, flushes it to the drive,

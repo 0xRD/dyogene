@@ -104,8 +104,9 @@ final class AppModel {
     var navigationHistory: [Int] = []
 
     /// Spotlight dates, fetched lazily for what is on screen.
-    private var spotlight: [Int: (date: Double, source: LastUsed.Source)] = [:]
-    private var findingsCache: (version: Int, value: [SuspectFinding])?
+    // Caches filled while views draw: ignored by observation, or each fill would redraw again.
+    @ObservationIgnored private var spotlight: [Int: (date: Double, source: LastUsed.Source)] = [:]
+    @ObservationIgnored private var findingsCache: (version: Int, value: [SuspectFinding])?
 
     init() {
         let environment = ProcessInfo.processInfo.environment
@@ -382,6 +383,7 @@ final class RemovalRequest: Identifiable {
     struct Item: Identifiable {
         let index: Int
         let path: String
+        let displayPath: String
         let name: String
         let size: UInt64
         let refusal: String?
@@ -406,11 +408,12 @@ final class RemovalRequest: Identifiable {
             let path = tree.path(of: index)
             let node = tree[index]
             var refusal: String?
+            if mode != .trash, let reason = FileRemover.preflight(path, mode: mode) { refusal = reason }
             if case .refused(let reason) = RemovalPolicy.verdict(for: path, home: home) { refusal = reason }
             if mode == .secureErase, node.flags.contains(.inCloud) {
                 refusal = "Stored in iCloud, not on this Mac."
             }
-            return Item(index: index, path: path, name: node.name, size: node.size, refusal: refusal,
+            return Item(index: index, path: path, displayPath: FileTree.displayPath(path), name: node.name, size: node.size, refusal: refusal,
                         warnings: RemovalPolicy.warnings(for: path, home: home, isInCloud: node.flags.contains(.inCloud)))
         }
         if mode == .secureErase && demo {

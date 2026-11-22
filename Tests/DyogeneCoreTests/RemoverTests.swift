@@ -69,3 +69,21 @@ import Testing
         #expect(throws: FileRemover.Failure.self) { try FileRemover.remove(NSHomeDirectory() + "/Documents", mode: .secureErase) }
     }
 }
+
+@Suite(.serialized) struct PreflightTests {
+    let base = NSHomeDirectory() + "/Library/Caches/io.github.0xrd.dyogene.tests/\(UUID().uuidString)"
+
+    @Test func secureEraseRefusesBeforeTouchingAnything() throws {
+        defer { try? FileManager.default.removeItem(atPath: base) }
+        try FileManager.default.createDirectory(atPath: base + "/dir", withIntermediateDirectories: true)
+        let first = base + "/dir/a.bin"
+        try Data(repeating: 0x41, count: 4096).write(to: URL(fileURLWithPath: first))
+        try Data(repeating: 0x42, count: 4096).write(to: URL(fileURLWithPath: base + "/dir/b.bin"))
+        link(base + "/dir/b.bin", base + "/b-other-name.bin")
+        #expect(FileRemover.preflight(base + "/dir", mode: .secureErase) != nil)
+        #expect(throws: FileRemover.Failure.self) { try FileRemover.remove(base + "/dir", mode: .secureErase) }
+        // Nothing was overwritten.
+        #expect(try Data(contentsOf: URL(fileURLWithPath: first)) == Data(repeating: 0x41, count: 4096))
+        #expect(FileRemover.preflight(base + "/dir", mode: .permanent) == nil)
+    }
+}

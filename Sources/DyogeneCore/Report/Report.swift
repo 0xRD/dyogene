@@ -77,7 +77,7 @@ public enum Report {
         let node = tree[index]
         let type: String = node.flags.contains(.smallGroup) ? "group-of-small-files"
             : node.isPackage ? "package" : node.isDirectory ? "folder" : node.flags.contains(.symlink) ? "symlink" : "file"
-        var entry = Entry(path: tree.path(of: index), name: node.name, type: type, size: node.size,
+        var entry = Entry(path: tree.displayPath(of: index), name: node.name, type: type, size: node.size,
                           sizeText: Format.bytes(node.size), lastUsed: Format.date(node.lastUsed),
                           lastUsedAge: Format.age(lastUsed: node.lastUsed, now: now), kind: node.kind.key,
                           items: node.itemCount, children: nil)
@@ -114,7 +114,7 @@ public enum Report {
                    purgeable: Format.bytes($0.purgeable))
         }
         let notSeen = volume.map { Format.bytes($0.used > tree.totalSize ? $0.used - tree.totalSize : 0) }
-        return Summary(scannedFolder: tree.rootPath, scannedAt: ISO8601DateFormatter().string(from: tree.scannedAt),
+        return Summary(scannedFolder: tree.rootPath == FileTree.dataVolume ? "/ (whole Mac, data volume)" : tree.rootPath, scannedAt: ISO8601DateFormatter().string(from: tree.scannedAt),
                        scannedSize: Format.bytes(tree.totalSize), scannedBytes: tree.totalSize, files: tree[0].itemCount,
                        unreadableFolders: tree.unreadableCount, fullDiskAccess: fullDiskAccess, volume: volumeReport,
                        notSeenByScan: notSeen, byKind: byKind, byAge: byAge,

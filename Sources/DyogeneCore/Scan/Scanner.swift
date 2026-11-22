@@ -46,9 +46,18 @@ public struct ScanOptions: Sendable {
     /// `protectedSkips` defaults to the usual protected folders when Full Disk Access is missing:
     /// opening them would block on a permission prompt or fail anyway.
     public init(root: String, exclusions: [String] = [], protectedSkips: [String]? = nil) {
-        self.root = (root as NSString).standardizingPath
-        self.exclusions = exclusions.map { ($0 as NSString).standardizingPath }
-        self.protected = protectedSkips ?? (FullDiskAccess.isGranted ? [] : ScanOptions.protectedFolders(home: NSHomeDirectory()))
+        let root = (root as NSString).standardizingPath
+        self.root = root
+        let protected = protectedSkips ?? (FullDiskAccess.isGranted ? [] : ScanOptions.protectedFolders(home: NSHomeDirectory()))
+        // Scanning the data volume ("Whole Mac") sees /Users/... as /System/Volumes/Data/Users/...:
+        // match both spellings, or protected folders would not be skipped.
+        self.exclusions = ScanOptions.withDataVolumeAliases(exclusions.map { ($0 as NSString).standardizingPath }, root: root)
+        self.protected = ScanOptions.withDataVolumeAliases(protected, root: root)
+    }
+
+    static func withDataVolumeAliases(_ paths: [String], root: String) -> [String] {
+        guard root == FileTree.dataVolume || root.hasPrefix(FileTree.dataVolume + "/") else { return paths }
+        return paths + paths.filter { !$0.hasPrefix(FileTree.dataVolume + "/") }.map { FileTree.dataVolume + $0 }
     }
 
     /// Folders of a home that macOS shows only with Full Disk Access, or after a prompt per app

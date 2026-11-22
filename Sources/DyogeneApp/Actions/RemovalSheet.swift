@@ -49,7 +49,6 @@ struct RemovalSheet: View {
             HStack {
                 Button("Cancel") { model.removal = nil }
                     .keyboardShortcut(.defaultAction)
-                    .keyboardShortcut(.cancelAction)
                     .controlSize(.large)
                 Spacer()
                 HoldToConfirmButton(title: "Hold to \(request.mode.title)", duration: request.mode.holdDuration,
@@ -61,6 +60,7 @@ struct RemovalSheet: View {
         }
         .padding(22)
         .frame(width: 520)
+        .onExitCommand { model.removal = nil }
     }
 
     private var symbol: String {
@@ -101,7 +101,7 @@ struct RemovalSheet: View {
                         .foregroundStyle(item.allowed ? Color.inkSecondary : Color.danger)
                     VStack(alignment: .leading, spacing: 2) {
                         Text(item.name).font(.system(size: 12.5, weight: .medium)).lineLimit(1).truncationMode(.middle)
-                        Text(item.refusal ?? item.path)
+                        Text(item.refusal ?? item.displayPath)
                             .font(.system(size: 10.5))
                             .foregroundStyle(item.allowed ? Color.inkSecondary : Color.danger)
                             .lineLimit(2)

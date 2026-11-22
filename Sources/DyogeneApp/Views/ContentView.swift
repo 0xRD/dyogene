@@ -18,6 +18,10 @@ struct ContentView: View {
         }
         .overlay(alignment: .bottom) { ToastView(model: model) }
         .onAppear(perform: debugSheet)
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+            // The user may have just allowed Full Disk Access in System Settings.
+            model.fullDiskAccess = FullDiskAccess.isGranted
+        }
     }
 
     @ViewBuilder private var detail: some View {
